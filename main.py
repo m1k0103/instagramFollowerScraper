@@ -1,4 +1,5 @@
 import requests
+from bs4 import BeautifulSoup
 #from selenium import webdriver
 #from selenium.webdriver.common.keys import Keys
 #from selenium.webdriver.common.by import By
@@ -16,28 +17,25 @@ def scrape_followers():
 #assert "No results found." not in driver.page_source
 #driver.close()
 
-def resolveInstagramID(username):
-    url = """https://www.instagram.com/graphql/query?variables={"userID":"40459854417","username":"xanderzero_"}"""
-    headers = {
-        "accept": "*/*",
-        "accept-language": "en-US,en;q=0.9",
-        "x-ig-app-id": "936619743392459"
-    }
-    r = requests.get(url,headers)
-    print(r.status_code)
+def resolveUsernameToID(username):
+    r = requests.get(f"https://www.instagram.com/{username}/") # searching for profilepage_ gets the uid so just get source of page and get id
+    print(r.text)
+    soup = BeautifulSoup(r.text)
+    
+    pass
+
+
+def getAllPostIDS(username):
+    
+    pass
+
+
+def scrapePostLikes(username):
+    userID = resolveUsernameToID(username)
+    allPostIds = getAllPostIDS()
+    for p in allPostIds:
+        url = f"https://www.instagram.com/api/v1/media/{p}/likers/"
 
 
 
-def scrape(instagramID):
-    url = f"https://www.instagram.com/api/v1/friendships/{instagramID}/followers/?count=12&search_surface=follow_list_page"
-    headers = {
-        "accept": "*/*",
-        "accept-language": "en-US,en;q=0.9",
-        "x-ig-app-id": "936619743392459",
-    }
-    r = requests.get(url=url,headers=headers)
-    print(r.status_code)
-
-instaId = resolveInstagramID("compsockent")
-
-scrape(instaId)
+instaId = scrapePostLikes("compsockent")
